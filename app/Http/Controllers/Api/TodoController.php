@@ -69,13 +69,18 @@ class TodoController extends Controller
 
     public function update(Request $request, $id){
 
-        try{
 
+        try{
             $todo = Todo::where('user_id', auth()->id())->where('id', $id)->first();
             if($todo){
-                $todo->title = $request->title;
-                $todo->content = $request->content;
-                $todo->status = $request->status;
+
+                $validatedData = $request->validate([
+                    'title' => 'sometimes|string|max:255',
+                    'content' => 'nullable|string',
+                    'status' => 'sometimes',
+                ]);
+
+                $todo->fill($validatedData);
 
                 if($todo->save())
                 {
@@ -85,7 +90,7 @@ class TodoController extends Controller
                     ], 200);
                 }
 
-                return response()->json([ 'error' => 'something is wrong' ], 422);
+                return response()->json([ 'error' => 'Something went wrong while saving' ], 422);
             }
 
         }catch(\Exception $e){
