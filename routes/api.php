@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/', function(){
+    return response()->json([ 'message' => 'A secure Todo api endpoints' ]);
+});
+
 
 Route::group(['prefix' => 'auth'], function(){
     Route::post('/signup', [AuthController::class, 'createAccount']);
